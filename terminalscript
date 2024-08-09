@@ -85,9 +85,9 @@ done
 # Opción 1 del Menú, Ver Entradas del Diario
 viewentriesfunc () 
 {
-# Añadir todos los archivos de texto como strings individuales para usarlos como un menú de selección
+# Añadir todos los archivos de texto como strings individuales, ordenados de forma ascendente
 entrylist=('Regresar')
-rawentry="$(find $BASE_DIR/entries -type f)"
+rawentry="$(ls $BASE_DIR/entries/*)"
 for i in $rawentry; do
 i=${i##*/}
 entrylist+=("$i")
