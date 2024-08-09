@@ -42,6 +42,9 @@ ___________________________________________________'
 # Función para mostrar el menú principal
 mainmenufunc () 
 {
+# Detener cualquier reproducción de música en curso
+pkill -f play > /dev/null 2>&1
+
 clear
 
 # Mostrar el texto del Menú
@@ -53,7 +56,7 @@ echo "¿Qué te gustaría hacer?" | pv -qL 80
 
 # Mostrar las opciones del menú
 COLUMNS=12
-select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos"
+select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos" "Música"
 do
     case $menuchoice in
     "Ver Entradas del Diario")
@@ -67,6 +70,10 @@ do
     "Comandos")
     play_sound "ui_hacking_charenter_01.wav"
     commandsfunc
+    ;;
+    "Música")
+    play_sound "ui_hacking_charenter_01.wav"
+    musicfunc
     ;;
     *)
     play_sound "ui_hacking_passbad.wav"
@@ -159,6 +166,7 @@ repeatmainmenufunc
 }
 
 # Menú para ejecutar comandos
+# Menú para ejecutar comandos
 commandsfunc () 
 {
 # Mostrar el texto del Menú
@@ -170,7 +178,7 @@ echo "¿Qué comando te gustaría ejecutar?" | pv -qL 80
 
 # Mostrar las opciones del menú
 COLUMNS=12
-select commandoption in "Regresar" "Comando1" "Comando2" "Comando3"
+select commandoption in "Regresar" "Comando1" "Comando2" "Comando3" "Restaurar valores predeterminados"
 do
     case $commandoption in
     "Regresar")
@@ -204,6 +212,21 @@ do
     read -p "Presiona enter para continuar"
     commandsfunc
     ;;
+    "Restaurar valores predeterminados")
+    play_sound "ui_hacking_charenter_01.wav"
+    read -sp "Introduce la contraseña del administrador: " admin_password
+    echo
+    admin_correct_password="larp1234"
+    if [ "$admin_password" == "$admin_correct_password" ]; then
+        play_sound "ui_hacking_passgood.wav"
+        "$BASE_DIR/comando4.sh"
+    else
+        play_sound "ui_hacking_passbad.wav"
+        echo "Contraseña incorrecta"
+    fi
+    read -p "Presiona enter para continuar"
+    commandsfunc
+    ;;
     *)
     play_sound "ui_hacking_passbad.wav"
     ;;
@@ -214,6 +237,9 @@ done
 # Igual que la función de la pantalla del menú principal, pero sin las animaciones molestas
 repeatmainmenufunc ()
 {
+# Detener cualquier reproducción de música en curso
+pkill -f play > /dev/null 2>&1
+
 clear
 
 display_center "$BASE_DIR/greeterheader.txt"
@@ -221,7 +247,7 @@ echo "$greeter"
 play_sound "ui_hacking_charscroll.wav"
 echo "¿Qué te gustaría hacer?" | pv -qL 80
 COLUMNS=12
-select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos"
+select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos" "Música"
 do
     case $menuchoice in
     "Ver Entradas del Diario")
@@ -235,6 +261,47 @@ do
     "Comandos")
     play_sound "ui_hacking_charenter_01.wav"
     commandsfunc
+    ;;
+    "Música")
+    play_sound "ui_hacking_charenter_01.wav"
+    musicfunc
+    ;;
+    *)
+    play_sound "ui_hacking_passbad.wav"
+    ;;
+    esac
+done
+}
+
+# Menú para reproducir música
+# Menú para reproducir música
+musicfunc () 
+{
+# Detener cualquier reproducción de música en curso
+pkill -f play > /dev/null 2>&1
+
+# Mostrar el texto del Menú
+clear
+display_center "$BASE_DIR/greeterheader.txt"
+echo "$greeter" 
+play_sound "ui_hacking_charscroll.wav"
+echo "¿Qué te gustaría hacer?" | pv -qL 80
+
+# Mostrar las opciones del menú
+COLUMNS=12
+select musicoption in "Regresar" "Track 1"
+do
+    case $musicoption in
+    "Regresar")
+    play_sound "ui_hacking_charenter_01.wav"
+    repeatmainmenufunc
+    ;;
+    "Track 1")
+    play_sound "ui_hacking_charenter_01.wav"
+    play -q "$BASE_DIR/ui_music_1.mp3" &
+    read -p "Presiona enter para continuar"
+    pkill -f play > /dev/null 2>&1
+    musicfunc
     ;;
     *)
     play_sound "ui_hacking_passbad.wav"

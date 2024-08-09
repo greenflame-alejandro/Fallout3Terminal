@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo "¡Acceso concedido! Ejecutando comando 3..."
+echo "¡Acceso concedido! Ejecutando comando 2..."
