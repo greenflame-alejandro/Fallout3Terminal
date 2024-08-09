@@ -2,8 +2,17 @@
 
 BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
 
+# Función para manejar Ctrl+C
+trap 'restart_script' SIGINT
+
+# Función para reiniciar el script
+restart_script() {
+    echo "Reiniciando el script..." | pv -qL 80
+    exec "$0"
+}
+
 IFS=$'\n'
-entrylist=('Go Back')
+entrylist=('Regresar')
 rawentry="$(find $BASE_DIR/entries -type f)"
 for i in $rawentry; do
 i=${i##*/}
@@ -12,8 +21,12 @@ done
 
 COLUMNS=12
 
+# Función para reproducir sonidos
+play_sound() {
+    play -q "$BASE_DIR/$1" &
+}
 
-#This function is to display the top header in a centred alignment!
+# Función para mostrar el encabezado superior alineado al centro
 display_center(){
     columns="$(tput cols)"
     while IFS= read -r line; do
@@ -21,264 +34,231 @@ display_center(){
     done < "$1"
 }
 
-
-#This string is to be displayed as a custom "title header" at the top, feel free to customise it, as most Terminals in Fallout have their own custom one based on their owner!
+# Este es el "encabezado de título" personalizado que se muestra arriba
 greeter=$'
-Personal Terminal "Proto-Boy" Manufactured by RobCo
+Terminal Personal "Proto-Boy" Fabricado por RobCo
 ___________________________________________________'
 
-
-
-#Main Menu Screen
+# Función para mostrar el menú principal
 mainmenufunc () 
 {
 clear
 
-#display the Menu text
-play -q $BASE_DIR/ui_hacking_charscroll.wav
+# Mostrar el texto del Menú
+play_sound "ui_hacking_charscroll.wav"
 display_center "$BASE_DIR/greeterheader.txt" | pv -qL 80
 echo "$greeter" | pv -qL 80
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo What would you like to do? | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "¿Qué te gustaría hacer?" | pv -qL 80
 
-#Display the menu options
+# Mostrar las opciones del menú
 COLUMNS=12
-select menuchoice in "View Journal Entries" "Log a Journal Entry" "Delete a Journal Entry" "Proceed to Desktop"
+select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos"
 do
     case $menuchoice in
-    "View Journal Entries")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    "Ver Entradas del Diario")
+    play_sound "ui_hacking_charenter_01.wav"
     viewentriesfunc
     ;;
-    "Log a Journal Entry")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-   writeentryfunc
+    "Registrar una Entrada del Diario")
+    play_sound "ui_hacking_charenter_01.wav"
+    writeentryfunc
     ;;
-    "Delete a Journal Entry")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-    deleteentryfunc
-    ;;
-    "Proceed to Desktop")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-    echo Goodbye! && exit
+    "Comandos")
+    play_sound "ui_hacking_charenter_01.wav"
+    commandsfunc
     ;;
     *)
-    play -q $BASE_DIR/ui_hacking_passbad.wav
+    play_sound "ui_hacking_passbad.wav"
     ;;
     esac
 done
 }
 
-
-#Option 1 Menu, Viewing Journal Entries
+# Opción 1 del Menú, Ver Entradas del Diario
 viewentriesfunc () 
 {
-#adding all the text files as individual strings to be used as a selection menu
-entrylist=('Go Back')
+# Añadir todos los archivos de texto como strings individuales para usarlos como un menú de selección
+entrylist=('Regresar')
 rawentry="$(find $BASE_DIR/entries -type f)"
 for i in $rawentry; do
 i=${i##*/}
 entrylist+=("$i")
 done
 
-#display the Menu text
+# Mostrar el texto del Menú
     clear
     display_center "$BASE_DIR/greeterheader.txt"
     echo "$greeter" 
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
-    echo Which Journal Entry would you like to access? | pv -qL 80
+    play_sound "ui_hacking_charscroll.wav"
+    echo "¿Qué entrada del diario te gustaría acceder?" | pv -qL 80
     
-    #display the menu options
+    # Mostrar las opciones del menú
     COLUMNS=12
-    select readoption in ${entrylist[@]}
+    select readoption in "${entrylist[@]}"
     do
     case $readoption in
-    "Go Back")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    "Regresar")
+    play_sound "ui_hacking_charenter_01.wav"
     repeatmainmenufunc
     ;;
         *)
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    play_sound "ui_hacking_charenter_01.wav"
     ;;
     esac
 
-    #displays the selected entry
+    # Mostrar la entrada seleccionada
     clear
-   display_center "$BASE_DIR/greeterheader.txt"
-   echo "$greeter"
+    display_center "$BASE_DIR/greeterheader.txt"
+    echo "$greeter"
     echo
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
+    play_sound "ui_hacking_charscroll.wav"
     echo "$readoption:"  | pv -qL 80
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
-    cat< "$BASE_DIR/entries/$readoption"  | pv -qL 80
+    play_sound "ui_hacking_charscroll.wav"
+    cat "$BASE_DIR/entries/$readoption"  | pv -qL 80
     echo
-    read -p "Press enter to continue"
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    read -p "Presiona enter para continuar"
+    play_sound "ui_hacking_charenter_01.wav"
     
-    #goes back to main menu
+    # Volver al menú principal
     repeatmainmenufunc
     done
 }
 
-#menu for writing an entry
+# Menú para escribir una entrada
 writeentryfunc () 
 {
-
-#displays menu text
+# Mostrar el texto del menú
 clear
 display_center "$BASE_DIR/greeterheader.txt"
 echo "$greeter" 
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo "What would you like to name the entry?" | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "¿Cómo te gustaría nombrar la entrada?" | pv -qL 80
 
-#reads user input
+# Leer la entrada del usuario
 read entrynameinput 
-play -q $BASE_DIR/ui_hacking_charenter_01.wav
+play_sound "ui_hacking_charenter_01.wav"
 
-#displays menu text again
+# Mostrar el texto del menú de nuevo
 clear
 display_center "$BASE_DIR/greeterheader.txt"
 echo "$greeter" 
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo Press CTRL+D to finalise entry  | pv -qL 80
-play -q $BASE_DIR/ui_hacking_charscroll.wav
+play_sound "ui_hacking_charscroll.wav"
+echo "Presiona CTRL+D para finalizar la entrada"  | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
 echo $entrynameinput:  | pv -qL 80
 echo
-#uses cat text editor to write entries. ctrl+d to finish
+# Usar el editor de texto cat para escribir entradas. ctrl+d para finalizar
 cat >"$BASE_DIR/entries/$entrynameinput"
 cat "$BASE_DIR/entries/$entrynameinput"
 clear
-play -q $BASE_DIR/ui_hacking_charenter_01.wav
+play_sound "ui_hacking_charenter_01.wav"
 
-#returns to mainmenu
+# Volver al menú principal
 repeatmainmenufunc
-
-
 }
 
-#menu to delete an entry
-deleteentryfunc () 
+# Menú para ejecutar comandos
+commandsfunc () 
 {
+# Mostrar el texto del Menú
+clear
+display_center "$BASE_DIR/greeterheader.txt"
+echo "$greeter" 
+play_sound "ui_hacking_charscroll.wav"
+echo "¿Qué comando te gustaría ejecutar?" | pv -qL 80
 
-#adding all the text files as individual strings to be used as a selection menu
-entrylist=('Go Back')
-rawentry="$(find $BASE_DIR/entries -type f)"
-for i in $rawentry; do
-i=${i##*/}
-entrylist+=("$i")
-done
-
-    #displays menu text
-    clear
-    display_center "$BASE_DIR/greeterheader.txt"
-    echo "$greeter" 
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
-    echo Which Journal Entry would you like to delete? | pv -qL 80
-    
-    #displays menu options
-    COLUMNS=12
-    select readoption in ${entrylist[@]}
-    do
-    case $readoption in
-    "Go Back")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+# Mostrar las opciones del menú
+COLUMNS=12
+select commandoption in "Regresar" "Comando1" "Comando2" "Comando3"
+do
+    case $commandoption in
+    "Regresar")
+    play_sound "ui_hacking_charenter_01.wav"
     repeatmainmenufunc
     ;;
-        *)
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    "Comando1")
+    play_sound "ui_hacking_charenter_01.wav"
+    "$BASE_DIR/comando1.sh"
+    read -p "Presiona enter para continuar"
+    commandsfunc
+    ;;
+    "Comando2")
+    play_sound "ui_hacking_charenter_01.wav"
+    echo "Hola de nuevo"
+    read -p "Presiona enter para continuar"
+    commandsfunc
+    ;;
+    "Comando3")
+    play_sound "ui_hacking_charenter_01.wav"
+    read -sp "Introduce la contraseña maestra: " password
+    echo
+    correct_password="1234"
+    if [ "$password" == "$correct_password" ]; then
+        play_sound "ui_hacking_passgood.wav"
+        "$BASE_DIR/comando3.sh"
+    else
+        play_sound "ui_hacking_passbad.wav"
+        echo "Contraseña incorrecta"
+    fi
+    read -p "Presiona enter para continuar"
+    commandsfunc
+    ;;
+    *)
+    play_sound "ui_hacking_passbad.wav"
     ;;
     esac
-    
-    #displays menu text again
-    clear
-   display_center "$BASE_DIR/greeterheader.txt"
-   echo "$greeter"
-    echo
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
-    echo "Delete $readoption? Type YES to continue"  | pv -qL 80
-    play -q $BASE_DIR/ui_hacking_charscroll.wav
-    
-    #detects user input if they typed in "yes". case insensitive as it converts it to all caps
-    read confirmdeletion
-     if  [[ ${confirmdeletion^^} == "YES" ]]
-     then
-     rm -f "$BASE_DIR/entries/$readoption"
-     play -q $BASE_DIR/ui_hacking_charenter_01.wav
-     echo FILE DELETED!
-     play -q  $BASE_DIR/ui_hacking_passgood.wav
-     sleep 0.1
-                repeatmainmenufunc
-                
-            #if something other than yes was typed in
-        else
-        echo OPERATION CANCELLED
-        play -q $BASE_DIR/ui_hacking_charenter_01.wav
-        play -q  $BASE_DIR/ui_hacking_passbad.wav
-        sleep 0.2
-        
-        #goes back to main menu
-        repeatmainmenufunc
-        fi
-        done
+done
 }
 
-#same as main menu screen function, but without the annoying animations
+# Igual que la función de la pantalla del menú principal, pero sin las animaciones molestas
 repeatmainmenufunc ()
 {
 clear
 
 display_center "$BASE_DIR/greeterheader.txt"
 echo "$greeter" 
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo What would you like to do? | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "¿Qué te gustaría hacer?" | pv -qL 80
 COLUMNS=12
-select menuchoice in "View Journal Entries" "Log a Journal Entry" "Delete a Journal Entry" "Proceed to Desktop"
+select menuchoice in "Ver Entradas del Diario" "Registrar una Entrada del Diario" "Comandos"
 do
     case $menuchoice in
-    "View Journal Entries")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
+    "Ver Entradas del Diario")
+    play_sound "ui_hacking_charenter_01.wav"
     viewentriesfunc
     ;;
-    "Log a Journal Entry")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-   writeentryfunc
+    "Registrar una Entrada del Diario")
+    play_sound "ui_hacking_charenter_01.wav"
+    writeentryfunc
     ;;
-    "Delete a Journal Entry")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-    deleteentryfunc
-    ;;
-    "Proceed to Desktop")
-    play -q $BASE_DIR/ui_hacking_charenter_01.wav
-    echo Goodbye! && exit
+    "Comandos")
+    play_sound "ui_hacking_charenter_01.wav"
+    commandsfunc
     ;;
     *)
-    play -q $BASE_DIR/ui_hacking_passbad.wav
+    play_sound "ui_hacking_passbad.wav"
     ;;
     esac
 done
 }
 
-
-
-
-#some random aesthetic startup junk
-
+# Secuencia de inicio con tiempos de espera y sonidos
 clear
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo Initializing boot... | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "Inicializando arranque..." | pv -qL 80
 sleep 0.4
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo Loading RobCo Unified OS...  | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "Cargando Sistema Operativo Unificado de RobCo..."  | pv -qL 80
 sleep 0.4
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo 64K RAM detected...  | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "64K RAM detectada..."  | pv -qL 80
 sleep 0.4
-play -q $BASE_DIR/ui_hacking_charscroll.wav
-echo Launching Interface...  | pv -qL 80
+play_sound "ui_hacking_charscroll.wav"
+echo "Lanzando Interfaz..."  | pv -qL 80
 sleep 0.4
 clear
 echo $'
-
 
   _____       _      _____                   
  |  __ \     | |    / ____|                  
@@ -290,8 +270,8 @@ echo $'
 '
            
 echo "==============================================" | pv -qL 50
-play -q $BASE_DIR/ui_hacking_passgood.wav
+play_sound "ui_hacking_passgood.wav"
 sleep 1
 
-#goes to the main menu
+# Ir al menú principal
 mainmenufunc;
