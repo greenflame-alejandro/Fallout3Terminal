@@ -386,16 +386,16 @@ repeatmainmenufunc
 clear
 play_sound "ui_hacking_charscroll.wav"
 echo "Inicializando arranque..." | pv -qL 80
-sleep 0.8
+sleep 1.2
 play_sound "ui_hacking_charscroll.wav"
 echo "Cargando Sistema Operativo Unificado de RobCo..."  | pv -qL 80
-sleep 0.8
+sleep 1.2
 play_sound "ui_hacking_charscroll.wav"
 echo "64K RAM detectada..."  | pv -qL 80
-sleep 0.8
+sleep 1.2
 play_sound "ui_hacking_charscroll.wav"
 echo "Lanzando Interfaz..."  | pv -qL 80
-sleep 0.8
+sleep 1.2
 clear
 echo $'
 
