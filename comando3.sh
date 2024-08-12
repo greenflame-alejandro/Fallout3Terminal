@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-./relay.sh 2200
-
+"$BASE_DIR/relay.sh 2200"
 play -q "$BASE_DIR/ui_hacking_charscroll.wav" -b 16 > /dev/null 2>&1
 echo "Iniciando secuencia de autodestrucción..." | pv -qL 20
 sleep 1
