@@ -15,7 +15,7 @@ IFS=$'\n'
 entrylist=('Regresar')
 rawentry="$(find $BASE_DIR/entries -type f)"
 for i in $rawentry; do
-i=${i##*/}
+i=${i##*/} 
 entrylist+=("$i")
 done
 
@@ -23,7 +23,7 @@ COLUMNS=12
 
 # Función para reproducir sonidos
 play_sound() {
-    play -q "$BASE_DIR/$1" 2>/dev/null &
+    play -q "$BASE_DIR/$1" -b 16 > /dev/null 2>&1
 }
 
 # Función para mostrar el encabezado superior alineado al centro
