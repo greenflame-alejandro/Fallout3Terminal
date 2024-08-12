@@ -109,6 +109,7 @@ done
 # Mostrar el texto del Menú
     clear
     display_center "$BASE_DIR/greeterheader.txt"
+    display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
     echo "$greeter" 
     play_sound "ui_hacking_charscroll.wav"
     echo "¿Qué entrada del diario te gustaría acceder?" | pv -qL 80
@@ -151,6 +152,7 @@ writeentryfunc ()
 # Mostrar el texto del menú
 clear
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "¿Cómo te gustaría nombrar la entrada?" | pv -qL 80
@@ -162,6 +164,7 @@ play_sound "ui_hacking_charenter_01.wav"
 # Mostrar el texto del menú de nuevo
 clear
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "Presiona CTRL+D para finalizar la entrada"  | pv -qL 80
@@ -185,6 +188,7 @@ commandsfunc ()
 # Mostrar el texto del Menú
 clear
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "¿Qué comando te gustaría ejecutar?" | pv -qL 80
@@ -256,6 +260,7 @@ pkill -f play 2>/dev/null
 clear
 
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "¿Qué te gustaría hacer?" | pv -qL 80
@@ -299,6 +304,7 @@ pkill -f play > /dev/null 2>&1
 # Mostrar el texto del Menú
 clear
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "¿Qué te gustaría hacer?" | pv -qL 80
@@ -359,6 +365,7 @@ holotape_reader_func ()
 # Mostrar el texto del Menú
 clear
 display_center "$BASE_DIR/greeterheader.txt"
+display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
 echo "$greeter" 
 play_sound "ui_hacking_charscroll.wav"
 echo "Presiona CTRL+C para salir." | pv -qL 80
