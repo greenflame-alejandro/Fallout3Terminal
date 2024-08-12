@@ -43,7 +43,7 @@ ___________________________________________________'
 mainmenufunc () 
 {
 # Detener cualquier reproducción de Jukebox en curso
-pkill -f play 2>/dev/null
+pkill -f play > /dev/null 2>&1
 
 clear
 
