@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
+
 play -q "$BASE_DIR/ui_hacking_charscroll.wav" -b 16 > /dev/null 2>&1
 echo "Iniciando chequeo del estado del chip de agua..." | pv -qL 20
 sleep 1

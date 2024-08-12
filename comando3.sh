@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
+
 "$BASE_DIR/relay.sh 2200"
 
 play -q "$BASE_DIR/ui_hacking_charscroll.wav" -b 16 > /dev/null 2>&1
