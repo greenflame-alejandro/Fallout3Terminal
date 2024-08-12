@@ -195,30 +195,30 @@ echo "¿Qué comando te gustaría ejecutar?" | pv -qL 80
 
 # Mostrar las opciones del menú
 COLUMNS=12
-select commandoption in "Regresar" "Comando1" "Comando2" "Comando3" "Restaurar valores predeterminados"
+select commandoption in "Regresar" "Estado del chip de agua" "Estado de ventilacion" "Secuencia de autodestruccion" "Restaurar valores predeterminados"
 do
     case $commandoption in
     "Regresar")
     play_sound "ui_hacking_charenter_01.wav"
     repeatmainmenufunc
     ;;
-    "Comando1")
+    "Estado del chip de agua")
     play_sound "ui_hacking_charenter_01.wav"
     "$BASE_DIR/comando1.sh"
     read -p "Presiona enter para continuar"
     commandsfunc
     ;;
-    "Comando2")
+    "Estado de ventilacion")
     play_sound "ui_hacking_charenter_01.wav"
-    echo "Hola de nuevo"
+    "$BASE_DIR/comando2.sh"
     read -p "Presiona enter para continuar"
     commandsfunc
     ;;
-    "Comando3")
+    "Secuencia de autodestruccion")
     play_sound "ui_hacking_charenter_01.wav"
     read -sp "Introduce la contraseña maestra: " password
     echo
-    correct_password="1234"
+    correct_password="010101"
     if [ "$password" == "$correct_password" ]; then
         play_sound "ui_hacking_passgood.wav"
         "$BASE_DIR/comando3.sh"
