@@ -2,7 +2,7 @@
 
 BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
 
-"$BASE_DIR/relay.sh" 2200
+"$BASE_DIR/relay.sh" 2500
 
 # Ejecutar la alarma en segundo plano
 play -q "$BASE_DIR/ui_alarm_01.mp3" -b 16 > /dev/null 2>&1 &
