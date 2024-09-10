@@ -30,6 +30,7 @@ trap 'restart_script' SIGINT
 # Función para reiniciar el script
 restart_script() {
     echo "Reiniciando el script..." | pv -qL 80
+    restore_arrow_keys  # Restaurar las teclas antes de reiniciar
     exec "$0"
 }
 
@@ -518,6 +519,8 @@ echo $'
 echo "==============================================" | pv -qL 60
 play_sound "ui_hacking_passgood.wav"
 sleep 1
+
+trap 'restore_arrow_keys' EXIT
 
 # Ir al menú principal
 mainmenufunc;
