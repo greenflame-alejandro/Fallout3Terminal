@@ -1,1 +1,1 @@
-cool-retro-term --fullscreen --noclose --profile /home/vault/Escritorio/Fallout3Terminal/terminal.json -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript
+cool-retro-term --fullscreen -noclose --profile "Apple II" -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript
