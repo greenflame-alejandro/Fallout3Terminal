@@ -2,35 +2,12 @@
 
 BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
 
-# Función para desactivar las teclas de flecha
-disable_arrow_keys() {
-    stty intr undef
-    stty start undef
-    stty stop undef
-    stty susp undef
-    stty rprnt undef
-    stty werase undef
-    stty lnext undef
-    stty discard undef
-    stty eol undef
-    stty eol2 undef
-}
-
-# Función para restaurar las teclas de flecha
-restore_arrow_keys() {
-    stty sane
-}
-
-# Desactivar las teclas de flecha al inicio
-disable_arrow_keys
-
 # Función para manejar Ctrl+C
 trap 'restart_script' SIGINT
 
 # Función para reiniciar el script
 restart_script() {
     echo "Reiniciando el script..." | pv -qL 80
-    restore_arrow_keys  # Restaurar las teclas antes de reiniciar
     exec "$0"
 }
 
@@ -519,8 +496,6 @@ echo $'
 echo "==============================================" | pv -qL 60
 play_sound "ui_hacking_passgood.wav"
 sleep 1
-
-trap 'restore_arrow_keys' EXIT
 
 # Ir al menú principal
 mainmenufunc;
