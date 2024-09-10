@@ -1,2 +1,2 @@
-cool-retro-term --fullscreen --noclose -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript
+cool-retro-term --fullscreen --noclose -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript --profile /home/vault/Escritorio/Fallout3Terminal/terminal.json
 #/Applications/cool-retro-term.app/Contents/MacOS/cool-retro-term -e bash /Users/palmera/Projects/own/Fallout3Terminal/terminalscript
