@@ -89,9 +89,7 @@ mainmenufunc ()
             ;;
         "Entretenimiento")
             play_sound "ui_hacking_charenter_01.wav"
-            "$BASE_DIR/comando5.sh"
-            read -n 1 -s -r -p "Presiona cualquier tecla para continuar..."
-            repeatmainmenufunc            
+            entertainment_menu
             ;;
         *)
             play_sound "ui_hacking_passbad.wav"
@@ -297,9 +295,7 @@ repeatmainmenufunc ()
             ;;
         "Entretenimiento")
             play_sound "ui_hacking_charenter_01.wav"
-            "$BASE_DIR/comando5.sh"
-            read -n 1 -s -r -p "Presiona cualquier tecla para continuar..."
-            repeatmainmenufunc
+            entertainment_menu
             ;;
         *)
             play_sound "ui_hacking_passbad.wav"
@@ -412,6 +408,64 @@ play_sound "ui_hacking_charenter_01.wav"
 repeatmainmenufunc
 }
 
+# Función para mostrar el menú de entretenimiento
+entertainment_menu () 
+{
+    clear
+
+    # Mostrar el texto del Menú
+    display_center "$BASE_DIR/greeterheader.txt"
+    display_date_time  # Mostrar la fecha y hora ajustada debajo del greeter
+    echo "$greeter" 
+    play_sound "ui_hacking_charscroll.wav"
+    echo "Selecciona un juego:" | pv -qL 80
+
+    # Mostrar las opciones del menú de juegos
+    COLUMNS=12
+    select gamechoice in "Regresar" "Jugar nsnake" "Jugar pacman4console" "Jugar ninvaders" "Jugar bastet"
+    do
+        case $gamechoice in
+        "Regresar")
+            play_sound "ui_hacking_charenter_01.wav"
+            repeatmainmenufunc
+            ;;
+        "Jugar nsnake")
+            play_sound "ui_hacking_charenter_01.wav"
+            play_game "nsnake"
+            ;;
+        "Jugar pacman4console")
+            play_sound "ui_hacking_charenter_01.wav"
+            play_game "pacman4console"
+            ;;
+        "Jugar ninvaders")
+            play_sound "ui_hacking_charenter_01.wav"
+            play_game "ninvaders"
+            ;;
+        "Jugar bastet")
+            play_sound "ui_hacking_charenter_01.wav"
+            play_game "bastet"
+            ;;
+        *)
+            play_sound "ui_hacking_passbad.wav"
+            echo "Opción inválida, por favor selecciona una opción válida." | pv -qL 80
+            ;;
+        esac
+    done
+}
+
+play_game() {
+    local game=$1
+    if command -v $game &> /dev/null; then
+        clear
+        $game
+        echo "Presiona enter para volver al menú principal..."
+    else
+        echo "Error: El juego o comando '$game' no existe."
+        echo "Presiona enter para volver al menú principal..."
+    fi
+    read -r
+    mainmenufunc
+}
 
 # Secuencia de inicio con tiempos de espera y sonidos
 clear
