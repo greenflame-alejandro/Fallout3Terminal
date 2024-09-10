@@ -422,28 +422,20 @@ entertainment_menu ()
 
     # Mostrar las opciones del menú de juegos
     COLUMNS=12
-    select gamechoice in "Regresar" "Jugar nsnake" "Jugar pacman4console" "Jugar ninvaders" "Jugar bastet"
+    select gamechoice in "Regresar" "Jugar Snake" "Jugar Pacman"
     do
         case $gamechoice in
         "Regresar")
             play_sound "ui_hacking_charenter_01.wav"
             repeatmainmenufunc
             ;;
-        "Jugar nsnake")
+        "Jugar Snake")
             play_sound "ui_hacking_charenter_01.wav"
             play_game "nsnake"
             ;;
-        "Jugar pacman4console")
+        "Jugar Pacman")
             play_sound "ui_hacking_charenter_01.wav"
             play_game "pacman4console"
-            ;;
-        "Jugar ninvaders")
-            play_sound "ui_hacking_charenter_01.wav"
-            play_game "ninvaders"
-            ;;
-        "Jugar bastet")
-            play_sound "ui_hacking_charenter_01.wav"
-            play_game "bastet"
             ;;
         *)
             play_sound "ui_hacking_passbad.wav"
