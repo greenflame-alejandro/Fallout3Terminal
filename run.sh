@@ -1,2 +1,2 @@
-cool-retro-term --fullscreen --noclose -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript --profile /home/vault/Escritorio/Fallout3Terminal/terminal.json
+cool-retro-term --fullscreen --geometry 640x480 --profile "Green" --font "APPLE_II" --font-size 16 --background-color "#000000" --font-color "#00FF00" --brightness 0.5 --contrast 0.8 --ambient-light 0.3 --opacity 1 -e--fullscreen --noclose -e bash /home/vault/Escritorio/Fallout3Terminal/terminalscript
 #/Applications/cool-retro-term.app/Contents/MacOS/cool-retro-term -e bash /Users/palmera/Projects/own/Fallout3Terminal/terminalscript
