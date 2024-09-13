@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
+source "$BASE_DIR/holotapes.sh"
 
 # Función para manejar Ctrl+C
 trap 'restart_script' SIGINT
