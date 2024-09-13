@@ -87,19 +87,20 @@ mainmenufunc ()
         "Lector de Holocintas")
             play_sound "ui_hacking_charenter_01.wav"
             
-            # Solicitar contraseña antes de ejecutar holotape_reader_func
-            read -sp "Introduce la contraseña del overseer: " password
+            # Pedir la contraseña antes de ejecutar el script holotapes.sh
+            read -sp "Introduce la contraseña maestra: " password
             echo
             correct_password="1234"
             
             if [ "$password" == "$correct_password" ]; then
                 play_sound "ui_hacking_passgood.wav"
-                holotape_reader_func  # Entrar si la contraseña es correcta
+                
+                # Ejecutar el script holotapes.sh si la contraseña es correcta
+                "$BASE_DIR/holotapes.sh"
             else
                 play_sound "ui_hacking_passbad.wav"
-                echo "Contraseña incorrecta"
-                read -p "Presiona enter para volver al menú principal"
-                repeatmainmenufunc  # Volver al menú principal si es incorrecta
+                echo "Contraseña incorrecta."
+                read -p "Presiona enter para continuar"
             fi
             ;;
         "Entretenimiento")
@@ -307,19 +308,20 @@ repeatmainmenufunc ()
         "Lector de Holocintas")
             play_sound "ui_hacking_charenter_01.wav"
             
-            # Solicitar contraseña antes de ejecutar holotape_reader_func
-            read -sp "Introduce la contraseña del overseer: " password
+            # Pedir la contraseña antes de ejecutar el script holotapes.sh
+            read -sp "Introduce la contraseña maestra: " password
             echo
             correct_password="1234"
             
             if [ "$password" == "$correct_password" ]; then
                 play_sound "ui_hacking_passgood.wav"
-                holotape_reader_func  # Entrar si la contraseña es correcta
+                
+                # Ejecutar el script holotapes.sh si la contraseña es correcta
+                "$BASE_DIR/holotapes.sh"
             else
                 play_sound "ui_hacking_passbad.wav"
-                echo "Contraseña incorrecta"
-                read -p "Presiona enter para volver al menú principal"
-                repeatmainmenufunc  # Volver al menú principal si es incorrecta
+                echo "Contraseña incorrecta."
+                read -p "Presiona enter para continuar"
             fi
             ;;
         "Entretenimiento")

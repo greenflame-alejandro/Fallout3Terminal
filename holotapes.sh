@@ -36,3 +36,5 @@ holotape_reader_func() {
     play_sound "ui_hacking_charenter_01.wav"
     repeatmainmenufunc
 }
+
+holotape_reader_func
