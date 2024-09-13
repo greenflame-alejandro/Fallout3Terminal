@@ -85,7 +85,21 @@ mainmenufunc ()
             ;;
         "Lector de Holocintas")
             play_sound "ui_hacking_charenter_01.wav"
-            holotape_reader_func
+            
+            # Solicitar contraseña antes de ejecutar holotape_reader_func
+            read -sp "Introduce la contraseña maestra: " password
+            echo
+            correct_password="overseerismaster"
+            
+            if [ "$password" == "$correct_password" ]; then
+                play_sound "ui_hacking_passgood.wav"
+                holotape_reader_func  # Entrar si la contraseña es correcta
+            else
+                play_sound "ui_hacking_passbad.wav"
+                echo "Contraseña incorrecta"
+                read -p "Presiona enter para volver al menú principal"
+                repeatmainmenufunc  # Volver al menú principal si es incorrecta
+            fi
             ;;
         "Entretenimiento")
             play_sound "ui_hacking_charenter_01.wav"
