@@ -12,35 +12,6 @@ restart_script() {
     exec "$0"
 }
 
-# Función para manejar F12
-handle_f12() {
-    pkill -f play > /dev/null 2>&1  # Detener cualquier sonido en reproducción
-    "$BASE_DIR/hack.sh"
-    exec "$0"  # Reiniciar el script principal cuando regrese de hack.sh
-}
-
-# Configurar el manejo de F12
-trap 'handle_f12' USR1
-
-# Iniciar un proceso en segundo plano para detectar F12
-(
-while true; do
-    if read -n1 -t1 key; then
-        if [ "$key" = $'\e' ]; then
-            read -n2 -t0.001 key
-            if [ "$key" = "[24" ]; then
-                kill -USR1 $$
-            fi
-        fi
-    fi
-done
-) &
-
-BACKGROUND_PID=$!
-
-# Asegurarse de que el proceso en segundo plano se detenga cuando el script termine
-trap 'kill $BACKGROUND_PID' EXIT
-
 IFS=$'\n'
 entrylist=('Regresar')
 rawentry="$(find $BASE_DIR/entries -type f)"
@@ -142,8 +113,6 @@ mainmenufunc ()
             ;;
         esac
     done
-
-    echo "Presiona F12 en cualquier momento para acceder al modo de hackeo" | pv -qL 80
 }
 
 # Opción 1 del Menú, Ver Entradas del Diario
