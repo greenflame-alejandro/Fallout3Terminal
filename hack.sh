@@ -102,11 +102,16 @@ display_interface() {
 }
 
 # Bucle principal del juego
-attempts=4
+attempts=6
 display_interface $attempts
 
-previous_inputs=()
+last_input=""
+last_result=""
+
 while [[ $attempts -gt 0 ]]; do
+  if [[ -n $last_input ]]; then
+    echo -n "C> $last_input > $last_result"
+  fi
   read -p "C> " input
   input_upper=$(echo $input | tr '[:lower:]' '[:upper:]')
   if [[ "$input_upper" == "$password" ]]; then
@@ -125,19 +130,13 @@ while [[ $attempts -gt 0 ]]; do
     fi
   else
     ((attempts--))
-    display_interface $attempts
-    if [[ ${#previous_inputs[@]} -gt 0 ]]; then
-      for stored_input in "${previous_inputs[@]}"; do
-        echo -n "C> $stored_input > ENTRADA DENEGADA. $(similarity_score "$stored_input" "$password")/${#stored_input} "
-      done
-      echo ""
-    fi
-    previous_inputs+=("$input")
     if [[ "${selected_words[@]}" =~ "$input_upper" ]]; then
-      echo -n "C> $input > ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input}"
+      last_result="ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input}"
     else
-      echo -n "C> $input > ENTRADA INVÁLIDA"
+      last_result="ENTRADA INVÁLIDA"
     fi
+    last_input=$input
+    display_interface $attempts
   fi
 done
 
