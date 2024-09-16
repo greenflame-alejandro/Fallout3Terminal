@@ -127,7 +127,7 @@ while [[ $attempts -gt 0 ]]; do
     echo "> Entrada aceptada. Cargando SO..."
     sleep 0.5
     echo " "
-    "$BASE_DIR/hack.sh"
+    "$BASE_DIR/holotapes.sh"
     read -p "¿RECARGAR TERMINAL? (S/N): " retry
     if [[ $retry =~ ^[Ss] ]]; then
       start_new_game
