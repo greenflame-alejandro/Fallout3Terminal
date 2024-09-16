@@ -53,30 +53,29 @@ for ((i = 0; i < 36; i++)); do
   hack_lines+=("$line")
 done
 
-# Elegir palabras aleatoriamente
+# Elegir palabras aleatoriamente y distribuirlas en las líneas de hack
 selected_words=()
+available_lines=($(seq 0 35))
 for ((i = 0; i < 10; i++)); do
+  # Seleccionar una palabra aleatoria
   word=${palabras[RANDOM % ${#palabras[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
     word=${palabras[RANDOM % ${#palabras[@]}]}
   done
   selected_words+=("$word")
-done
 
-# Asegurarse de que haya al menos 10 palabras
-while [[ ${#selected_words[@]} -lt 10 ]]; do
-  word=${palabras[RANDOM % ${#palabras[@]}]}
-  if [[ ! " ${selected_words[@]} " =~ " ${word} " ]]; then
-    selected_words+=("$word")
-  fi
-done
+  # Seleccionar una línea aleatoria disponible
+  line_index=$((RANDOM % ${#available_lines[@]}))
+  line_number=${available_lines[line_index]}
+  
+  # Remover la línea seleccionada de las disponibles
+  unset 'available_lines[line_index]'
+  available_lines=(${available_lines[@]})
 
-# Insertar palabras en las líneas de hack
-for ((i = 0; i < ${#selected_words[@]}; i++)); do
-  hack_line="${hack_lines[i]}"
-  selected_word="${selected_words[i]}"
-  position=$((RANDOM % (24 - ${#selected_word} + 1) + 9))
-  hack_lines[i]="${hack_line:0:position}${selected_word}${hack_line:position+${#selected_word}}"
+  # Insertar la palabra en la línea seleccionada
+  hack_line="${hack_lines[line_number]}"
+  position=$((RANDOM % (24 - ${#word} + 1) + 9))
+  hack_lines[line_number]="${hack_line:0:position}${word}${hack_line:position+${#word}}"
 done
 
 # Función para mostrar las líneas de hack en dos columnas
@@ -86,25 +85,28 @@ display_hack_lines() {
   done
 }
 
+# Función para mostrar la interfaz del juego
+display_interface() {
+  clear
+  echo "ROBCO INDUSTRIES (TM) PROTOCOLO TERMLINK"
+  echo "ESTADO: INTRODUZCA LA CONTRASEÑA AHORA"
+  echo " "
+  echo -n "$1 INTENTO(S) RESTANTE(S): "
+  for ((i = 0; i < $1; i++)); do
+    echo -n "█ "
+  done
+  echo " "
+  echo " "
+  display_hack_lines
+  echo " "
+}
+
 # Bucle principal del juego
 attempts=4
-clear
-echo "ROBCO INDUSTRIES (TM) PROTOCOLO TERMLINK"
-echo "ESTADO: INTRODUZCA LA CONTRASEÑA AHORA"
-echo " "
-echo -n "$attempts INTENTO(S) RESTANTE(S): "
-for ((i = 0; i < attempts; i++)); do
-  echo -n "█ "
-done
-echo " "
-echo " "
-
-# Mostrar las líneas de hack en dos columnas
-display_hack_lines
+display_interface $attempts
 
 previous_inputs=()
 while [[ $attempts -gt 0 ]]; do
-  echo " "
   read -p "C> " input
   if [[ "$input" == "$password" ]]; then
     sleep 1.5
@@ -120,18 +122,9 @@ while [[ $attempts -gt 0 ]]; do
       sleep 1
       exit
     fi
-  elif [[ "${selected_words[@]}" =~ "$input" ]]; then
+  else
     ((attempts--))
-    clear
-    echo "ROBCO INDUSTRIES (TM) PROTOCOLO TERMLINK"
-    echo "ESTADO: ENTRADA DENEGADA"
-    echo -n "$attempts INTENTO(S) RESTANTE(S): "
-    for ((i = 0; i < attempts; i++)); do
-      echo -n "█ "
-    done
-    echo " "
-    echo " "
-    display_hack_lines
+    display_interface $attempts
     if [[ ${#previous_inputs[@]} -gt 0 ]]; then
       for stored_input in "${previous_inputs[@]}"; do
         echo -n "C> $stored_input > ENTRADA DENEGADA. $(similarity_score "$stored_input" "$password")/${#stored_input} "
@@ -139,26 +132,11 @@ while [[ $attempts -gt 0 ]]; do
       echo ""
     fi
     previous_inputs+=("$input")
-    echo -n "C> $input > ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input} "
-  else
-    ((attempts--))
-    clear
-    echo "ROBCO INDUSTRIES (TM) PROTOCOLO TERMLINK"
-    echo "ESTADO: ENTRADA INVÁLIDA"
-    echo -n "$attempts INTENTO(S) RESTANTE(S): "
-    for ((i = 0; i < attempts; i++)); do
-      echo -n "█ "
-    done
-    echo " "
-    echo " "
-    display_hack_lines
-    if [[ ${#previous_inputs[@]} -gt 0 ]]; then
-      for stored_input in "${previous_inputs[@]}"; do
-        echo -n "C> $stored_input > ENTRADA DENEGADA. $(similarity_score "$stored_input" "$password")/${#stored_input} "
-      done
-      echo ""
+    if [[ "${selected_words[@]}" =~ "$input" ]]; then
+      echo -n "C> $input > ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input}"
+    else
+      echo -n "C> $input > ENTRADA INVÁLIDA"
     fi
-    echo -n "C> $input > ENTRADA INVÁLIDA "
   fi
 done
 
