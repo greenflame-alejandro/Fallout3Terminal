@@ -47,7 +47,7 @@ password=${words[RANDOM % ${#words[@]}]}
 
 # Generate hack lines for the game
 hack_lines=()
-for ((i = 0; i < 6; i++)); do
+for ((i = 0; i < 16; i++)); do
   symbols=$(generate_symbols)
   line="0xF$(printf "%03d" $((RANDOM % 1000)))   ${symbols}"
   hack_lines+=("$line")
