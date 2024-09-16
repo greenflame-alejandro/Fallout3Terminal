@@ -47,15 +47,15 @@ password=${words[RANDOM % ${#words[@]}]}
 
 # Generate hack lines for the game
 hack_lines=()
-for ((i = 0; i < 16; i++)); do
+for ((i = 0; i < 24; i++)); do
   symbols=$(generate_symbols)
   line="0xF$(printf "%03d" $((RANDOM % 1000)))   ${symbols}"
   hack_lines+=("$line")
 done
 
-# Randomly choose hack lines and words
+# Randomly choose words
 selected_words=()
-for ((i = 0; i < 6; i++)); do
+for ((i = 0; i < 24; i++)); do
   word=${words[RANDOM % ${#words[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
     word=${words[RANDOM % ${#words[@]}]}
@@ -64,12 +64,19 @@ for ((i = 0; i < 6; i++)); do
 done
 
 # Insert words into hack lines
-for ((i = 0; i < 6; i++)); do
+for ((i = 0; i < 24; i++)); do
   hack_line="${hack_lines[i]}"
   selected_word="${selected_words[i]}"
   position=$((RANDOM % (24 - ${#selected_word} + 1) + 9))
   hack_lines[i]="${hack_line:0:position}${selected_word}${hack_line:position+${#selected_word}}"
 done
+
+# Function to display hack lines in two columns
+display_hack_lines() {
+  for ((i = 0; i < 12; i++)); do
+    printf "%-38s %-38s\n" "${hack_lines[i]}" "${hack_lines[i+12]}"
+  done
+}
 
 # Main game loop
 attempts=4
@@ -84,10 +91,8 @@ done
 echo " "
 echo " "
 
-# Display the hack lines
-for line in "${hack_lines[@]}"; do
-  echo "$line"
-done
+# Display the hack lines in two columns
+display_hack_lines
 
 previous_inputs=()
 while [[ $attempts -gt 0 ]]; do
@@ -118,9 +123,7 @@ while [[ $attempts -gt 0 ]]; do
     done
     echo " "
     echo " "
-    for line in "${hack_lines[@]}"; do
-      echo "$line"
-    done
+    display_hack_lines
     if [[ ${#previous_inputs[@]} -gt 0 ]]; then
       for stored_input in "${previous_inputs[@]}"; do
         echo -n "C> $stored_input > ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input} "
@@ -139,9 +142,7 @@ while [[ $attempts -gt 0 ]]; do
     done
     echo " "
     echo " "
-    for line in "${hack_lines[@]}"; do
-      echo "$line"
-    done
+    display_hack_lines
     if [[ ${#previous_inputs[@]} -gt 0 ]]; then
       for stored_input in "${previous_inputs[@]}"; do
         echo -n "C> $stored_input > ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input} "
