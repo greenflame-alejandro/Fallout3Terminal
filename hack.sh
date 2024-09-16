@@ -12,7 +12,7 @@ generate_symbols() {
   local symbols=""
   local symbols_list=("!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "-" "=" "+" "[" "{" "]" "}" "|" ":" ";" "\"" "," "<" "." ">" "/" "?" "\`" "~")
 
-  for ((i = 0; i < 24; i++)); do
+  for ((i = 0; i < 36; i++)); do
     symbols+=${symbols_list[RANDOM % ${#symbols_list[@]}]}
   done
 
