@@ -12,7 +12,7 @@ generate_symbols() {
   local symbols=""
   local symbols_list=("!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "-" "=" "+" "[" "{" "]" "}" "|" ":" ";" "\"" "," "<" "." ">" "/" "?" "\`" "~")
 
-  for ((i = 0; i < 34; i++)); do
+  for ((i = 0; i < 24; i++)); do
     symbols+=${symbols_list[RANDOM % ${#symbols_list[@]}]}
   done
 
@@ -47,22 +47,15 @@ password=${words[RANDOM % ${#words[@]}]}
 
 # Generate hack lines for the game
 hack_lines=()
-for ((i = 0; i < 19; i++)); do
-  symbols1=$(generate_symbols)
-  symbols2=$(generate_symbols)
-  line="0xF$(printf "%03d" $((RANDOM % 1000)))   ${symbols1}   0xF$(printf "%03d" $((RANDOM % 1000)))   ${symbols2}"
+for ((i = 0; i < 6; i++)); do
+  symbols=$(generate_symbols)
+  line="0xF$(printf "%03d" $((RANDOM % 1000)))   ${symbols}"
   hack_lines+=("$line")
 done
 
 # Randomly choose hack lines and words
-selected_hacklines=()
 selected_words=()
-for ((i = 0; i < 10; i++)); do
-  index=$((RANDOM % ${#hack_lines[@]}))
-  selected_hacklines+=("${hack_lines[$index]}")
-  unset "hack_lines[$index]"
-  hack_lines=("${hack_lines[@]}")
-
+for ((i = 0; i < 6; i++)); do
   word=${words[RANDOM % ${#words[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
     word=${words[RANDOM % ${#words[@]}]}
@@ -71,15 +64,12 @@ for ((i = 0; i < 10; i++)); do
 done
 
 # Insert words into hack lines
-for ((i = 0; i < 10; i++)); do
-  hack_line="${selected_hacklines[i]}"
+for ((i = 0; i < 6; i++)); do
+  hack_line="${hack_lines[i]}"
   selected_word="${selected_words[i]}"
-  position=$((RANDOM % 23 + 9))
-  selected_hacklines[i]="${hack_line:0:position}${selected_word}${hack_line:position+${#selected_word}}"
+  position=$((RANDOM % (24 - ${#selected_word} + 1) + 9))
+  hack_lines[i]="${hack_line:0:position}${selected_word}${hack_line:position+${#selected_word}}"
 done
-
-# Combine and mix hack lines
-mixed_hacklines=("${selected_hacklines[@]}" "${hack_lines[@]}")
 
 # Main game loop
 attempts=4
@@ -94,8 +84,8 @@ done
 echo " "
 echo " "
 
-# Display the mixed hack lines
-for line in "${mixed_hacklines[@]}"; do
+# Display the hack lines
+for line in "${hack_lines[@]}"; do
   echo "$line"
 done
 
@@ -108,6 +98,7 @@ while [[ $attempts -gt 0 ]]; do
     echo "> Entry accepted. Loading OS..."
     sleep 0.5
     echo " "
+    ./holotapes.sh
     read -p "RELOAD TERMINAL? (Y/N): " retry
     if [[ $retry =~ ^[Yy] ]]; then
       start_new_game
@@ -121,51 +112,43 @@ while [[ $attempts -gt 0 ]]; do
     clear
     echo "ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL"
     echo "STATUS: ENTRY DENIED"
-    echo " "
     echo -n "$attempts ATTEMPT(S) LEFT: "
     for ((i = 0; i < attempts; i++)); do
       echo -n "█ "
     done
     echo " "
     echo " "
-    for line in "${mixed_hacklines[@]}"; do
+    for line in "${hack_lines[@]}"; do
       echo "$line"
     done
     if [[ ${#previous_inputs[@]} -gt 0 ]]; then
       for stored_input in "${previous_inputs[@]}"; do
-        echo " "
-        echo "C> $stored_input"
-        echo "> ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input}"
+        echo -n "C> $stored_input > ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input} "
       done
+      echo ""
     fi
     previous_inputs+=("$input")
-    echo " "
-    echo "C> $input"
-    echo "> ENTRY DENIED. $(similarity_score "$input" "$password")/${#input}"
+    echo -n "C> $input > ENTRY DENIED. $(similarity_score "$input" "$password")/${#input} "
   else
     clear
     echo "ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL"
     echo "STATUS: INVALID ENTRY"
-    echo " "
     echo -n "$attempts ATTEMPT(S) LEFT: "
     for ((i = 0; i < attempts; i++)); do
       echo -n "█ "
     done
     echo " "
     echo " "
-    for line in "${mixed_hacklines[@]}"; do
+    for line in "${hack_lines[@]}"; do
       echo "$line"
     done
     if [[ ${#previous_inputs[@]} -gt 0 ]]; then
       for stored_input in "${previous_inputs[@]}"; do
-        echo " "
-        echo "C> $stored_input"
-        echo "> ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input}"
+        echo -n "C> $stored_input > ENTRY DENIED. $(similarity_score "$stored_input" "$password")/${#stored_input} "
       done
+      echo ""
     fi
-    echo " "
-    echo "C> $input"
-    echo "> INVALID ENTRY"
+    echo -n "C> $input > INVALID ENTRY "
   fi
 done
 
