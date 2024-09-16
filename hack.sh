@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BASE_DIR="$(cd "$(dirname "$0")"; pwd)" || exit 2
+
 # Función para iniciar un nuevo juego
 start_new_game() {
   clear
@@ -125,7 +127,7 @@ while [[ $attempts -gt 0 ]]; do
     echo "> Entrada aceptada. Cargando SO..."
     sleep 0.5
     echo " "
-    ./holotapes.sh
+    "$BASE_DIR/hack.sh"
     read -p "¿RECARGAR TERMINAL? (S/N): " retry
     if [[ $retry =~ ^[Ss] ]]; then
       start_new_game
