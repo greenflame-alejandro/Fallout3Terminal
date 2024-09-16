@@ -21,8 +21,8 @@ generate_symbols() {
 
 # Función para calcular el número de caracteres comunes entre la entrada y la contraseña
 similarity_score() {
-  local word1=$1
-  local word2=$2
+  local word1=$(echo $1 | tr '[:lower:]' '[:upper:]')
+  local word2=$(echo $2 | tr '[:lower:]' '[:upper:]')
   local score=0
 
   for ((i = 0; i < ${#word1}; i++)); do
@@ -56,7 +56,7 @@ done
 # Elegir palabras aleatoriamente y distribuirlas en las líneas de hack
 selected_words=()
 available_lines=($(seq 0 35))
-for ((i = 0; i < 10; i++)); do
+for ((i = 0; i < 8; i++)); do
   # Seleccionar una palabra aleatoria
   word=${palabras[RANDOM % ${#palabras[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
@@ -108,7 +108,8 @@ display_interface $attempts
 previous_inputs=()
 while [[ $attempts -gt 0 ]]; do
   read -p "C> " input
-  if [[ "$input" == "$password" ]]; then
+  input_upper=$(echo $input | tr '[:lower:]' '[:upper:]')
+  if [[ "$input_upper" == "$password" ]]; then
     sleep 1.5
     echo "> Entrada aceptada. Cargando SO..."
     sleep 0.5
@@ -132,7 +133,7 @@ while [[ $attempts -gt 0 ]]; do
       echo ""
     fi
     previous_inputs+=("$input")
-    if [[ "${selected_words[@]}" =~ "$input" ]]; then
+    if [[ "${selected_words[@]}" =~ "$input_upper" ]]; then
       echo -n "C> $input > ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input}"
     else
       echo -n "C> $input > ENTRADA INVÁLIDA"
