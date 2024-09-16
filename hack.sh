@@ -54,16 +54,22 @@ for ((i = 0; i < 36; i++)); do
 done
 
 # Elegir palabras aleatoriamente y distribuirlas en las líneas de hack
-selected_words=()
+selected_words=("$password")  # Asegurarse de que la contraseña esté incluida
 available_lines=($(seq 0 35))
-for ((i = 0; i < 6; i++)); do
+for ((i = 1; i < 8; i++)); do  # Comenzar desde 1 porque ya tenemos la contraseña
   # Seleccionar una palabra aleatoria
   word=${palabras[RANDOM % ${#palabras[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
     word=${palabras[RANDOM % ${#palabras[@]}]}
   done
   selected_words+=("$word")
+done
 
+# Mezclar las palabras seleccionadas
+selected_words_shuffled=($(printf "%s\n" "${selected_words[@]}" | shuf))
+
+# Insertar palabras en las líneas de hack
+for word in "${selected_words_shuffled[@]}"; do
   # Seleccionar una línea aleatoria disponible
   line_index=$((RANDOM % ${#available_lines[@]}))
   line_number=${available_lines[line_index]}
@@ -130,7 +136,7 @@ while [[ $attempts -gt 0 ]]; do
     fi
   else
     ((attempts--))
-    if [[ "${selected_words[@]}" =~ "$input_upper" ]]; then
+    if [[ " ${selected_words[@]} " =~ " $input_upper " ]]; then
       last_result="ENTRADA DENEGADA. $(similarity_score "$input" "$password")/${#input}"
     else
       last_result="ENTRADA INVÁLIDA"
