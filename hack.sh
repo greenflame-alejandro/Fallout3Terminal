@@ -56,7 +56,7 @@ done
 # Elegir palabras aleatoriamente y distribuirlas en las líneas de hack
 selected_words=()
 available_lines=($(seq 0 35))
-for ((i = 0; i < 8; i++)); do
+for ((i = 0; i < 6; i++)); do
   # Seleccionar una palabra aleatoria
   word=${palabras[RANDOM % ${#palabras[@]}]}
   while [[ " ${selected_words[@]} " =~ " ${word} " ]]; do
