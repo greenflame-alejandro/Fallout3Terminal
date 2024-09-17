@@ -1,42 +1,56 @@
 #!/bin/bash
 
-# Array de noticias aleatorias
+# Función para limpiar caracteres especiales
+limpiar_texto() {
+    echo "$1" | iconv -f utf-8 -t ascii//TRANSLIT | tr -d "'\`"
+}
+
+# Array de noticias dramáticas
 noticias=(
-  "Vault 112: Un fallo en los reactores causó una explosión catastrófica. No hay sobrevivientes."
-  "Vault 7: Un brote de una enfermedad desconocida ha afectado a la mayoría de los residentes. Se teme lo peor."
-  "Vault 54: Se reporta que el Overseer ha sido derrocado. La situación es caótica."
-  "Vault 98: Se ha agotado el suministro de alimentos. Los residentes están recurriendo al canibalismo."
-  "Vault 15: Una tormenta radiactiva destruyó las comunicaciones. No se sabe nada del paradero de los habitantes."
-  "Vault 31: Se han reportado avistamientos de mutantes cerca de la entrada. Los residentes están aterrorizados."
-  "Vault 3: Una falla en el sistema de seguridad dejó a varios residentes atrapados en áreas selladas."
-  "Vault 21: Un ataque de saqueadores ha destruido gran parte del Vault. Los sobrevivientes están en estado de shock."
-  "Vault 92: Una fuga de radiación ha contaminado el suministro de agua. Las tasas de mortalidad se han disparado."
-  "Vault 101: El sistema de soporte vital está fallando. El Overseer ha ordenado la evacuación inmediata."
-  "Vault 76: Se han perdido los registros de varios residentes. Se sospecha de experimentos encubiertos."
-  "Vault 77: Los residentes han desaparecido sin dejar rastro. Se rumorea que algo en el exterior está cazándolos."
-  "Vault 14: Se ha detectado un grupo armado avanzando hacia el Vault. Las defensas están preparadas para el ataque."
-  "Vault 65: Una inteligencia artificial ha tomado el control del Vault, dejando a los residentes sin poder de decisión."
-  "Vault 32: Se han reportado señales extrañas provenientes del exterior. Nadie sabe lo que significan."
-  "Vault 88: Un terremoto ha comprometido la integridad estructural del Vault. Las evacuaciones están en curso."
-  "Vault 13: Un grupo de exploradores no ha regresado de su misión. Se teme que no haya sobrevivientes."
-  "Vault 29: Los niños del Vault están desapareciendo misteriosamente. Nadie sabe qué está pasando."
-  "Vault 90: Un virus desconocido ha comenzado a afectar la mente de los residentes, causando paranoia extrema."
-  "Vault 50: El sistema de control del aire está emitiendo gases tóxicos. Los residentes están buscando refugio."
-  "Vault 66: Se ha reportado una insurrección dentro del Vault. El control del Overseer está siendo desafiado."
-  "Vault 40: Una señal de auxilio ha sido enviada, pero las comunicaciones se cortaron antes de obtener detalles."
-  "Vault 75: Los residentes han comenzado a escuchar voces en los túneles. El miedo se ha apoderado del Vault."
-  "Vault 16: La electricidad ha fallado por completo. La oscuridad y el frío extremo están afectando a todos."
-  "Vault 45: Se ha encontrado un código encriptado: 010101. Nadie sabe para qué sirve, pero se dice que es importante."
-  "Vault 24: Se ha iniciado un éxodo masivo hacia el exterior. Los que se quedan esperan no ser abandonados."
-  "Vault 6: Se ha detectado radiación fuera de los niveles normales. Los residentes temen por su salud."
-  "Vault 86: Un grupo rebelde ha tomado el control del sistema de suministros y está exigiendo nuevas condiciones."
-  "Vault 44: Las reservas de agua han sido envenenadas. Las muertes aumentan rápidamente entre los habitantes."
-  "Vault 1: El Overseer ha decidido cerrar las puertas del Vault para siempre. Nadie entra, nadie sale."
-  "Vault 22: Algo está acechando a los residentes en las sombras. El miedo se está propagando como el fuego."
+  "Vault 112: El reactor ha explotado. No queda nadie vivo. Si estas leyendo esto, no hay esperanza."
+  "Vault 7: Un virus ha infectado a todos. Estoy solo en la oscuridad... esperando mi final."
+  "Vault 54: El Overseer ha sido asesinado. Nos estamos matando entre nosotros. Esto es el fin."
+  "Vault 98: La comida se ha acabado. Estamos recurriendo a medidas desesperadas. Nunca pense que llegaria a esto."
+  "Vault 15: La tormenta radiactiva ha destruido todo. No hay salida. Solo queda esperar la muerte."
+  "Vault 31: Mutantes han invadido. No hay donde correr. Este sera mi ultimo mensaje."
+  "Vault 3: Las puertas se han sellado. No hay escape. Estoy atrapado. Solo queda el silencio."
+  "Vault 21: Saqueadores han destruido todo. Estoy escondido, pero no sobrevivire mucho mas."
+  "Vault 92: El agua esta contaminada. Nadie lo sabe aun... pero ya es demasiado tarde para todos."
+  "Vault 101: El sistema de soporte vital ha fallado. No hay vuelta atras. Que alguien recuerde mi nombre."
+  "Vault 76: Los experimentos secretos nos han destruido. Ya no somos humanos."
+  "Vault 77: Todos han desaparecido. No estoy seguro si soy el unico que queda. Es como si nunca hubieran existido."
+  "Vault 14: Un grupo armado esta avanzando. No hay forma de defendernos. Esta es mi despedida."
+  "Vault 65: La inteligencia artificial controla todo ahora. No tenemos libre albedrio. Somos marionetas."
+  "Vault 32: Las señales extrañas... ¿es esto real? O mi mente me esta jugando una broma cruel."
+  "Vault 88: El terremoto ha dejado todo en ruinas. No queda esperanza ni futuro. Solo polvo."
+  "Vault 13: Los exploradores nunca volvieron. Algo esta cazando afuera. Algo que no podemos detener."
+  "Vault 29: Los niños... estan desapareciendo. No entiendo que esta pasando, pero temo lo peor."
+  "Vault 90: El virus nos esta volviendo locos. No confio en nadie. Ni siquiera en mi."
+  "Vault 50: Gases toxicos estan llenando el Vault. No podemos respirar. No podemos escapar."
+  "Vault 66: Hay una rebelion. Nos estamos matando por el control, pero ¿para que? Ya estamos condenados."
+  "Vault 40: Se corto la comunicacion. Nadie viene a rescatarnos. Estamos olvidados."
+  "Vault 75: Hay voces... voces en los tuneles. No puedo mas. No se si son reales."
+  "Vault 16: La electricidad fallo. La oscuridad... la oscuridad esta en todas partes. No puedo soportarla."
+  "Vault 45: Hemos encontrado un codigo encriptado: 010101. Nadie sabe para que es. Me aterra lo que pueda significar."
+  "Vault 24: La gente esta huyendo. Los que quedan aqui estan perdiendo la razon. Yo soy uno de ellos."
+  "Vault 6: La radiacion nos esta matando lentamente. No hay salida. Solo queda dolor."
+  "Vault 86: Un grupo rebelde tiene los suministros. Nos controlan con hambre y miedo."
+  "Vault 44: El agua ha sido envenenada. No queda mucho tiempo. Pronto estaremos todos muertos."
+  "Vault 1: Las puertas se han cerrado para siempre. No podemos entrar ni salir. Es nuestro fin."
+  "Vault 22: Algo se esconde en las sombras. Nos esta cazando uno por uno. No sobreviviremos."
+  "Vault 19: Estoy solo. Todos se han ido. No puedo recordar cuando fue la ultima vez que hable con alguien."
+  "Vault 84: Las luces parpadean... el silencio es insoportable. Me pregunto si soy el unico que queda."
+  "Vault 5: No queda nadie con quien hablar. El silencio es lo unico que me acompana. La soledad es peor que la muerte."
+  "Vault 17: Han pasado semanas sin una voz humana. Las maquinas zumban... pero yo me estoy apagando lentamente."
+  "Vault 11: Cada dia es mas dificil respirar. No solo por la falta de aire... sino por la desesperacion."
+  "Vault 71: Hace dias que no como. El hambre me consume, pero lo peor es la soledad. Nadie vendra."
+  "Vault 9: Nadie responde las transmisiones. Creo que soy el unico que sigue con vida."
+  "Vault 63: Mi piel esta empezando a quemarse... no pense que la radiacion llegaria tan rapido."
+  "Vault 45: Si encuentras este mensaje, recuerda el codigo: 010101. No se que significa, pero es lo unico que tengo."
 )
 
 # Seleccionar una noticia aleatoria
-noticia_aleatoria=${noticias[$RANDOM % ${#noticias[@]}]}
+noticia_aleatoria=$(limpiar_texto "${noticias[$RANDOM % ${#noticias[@]}]}")
 
 # Imprimir la noticia en la impresora térmica
 echo "=============================" > /dev/usb/lp0
