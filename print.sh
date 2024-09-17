@@ -54,7 +54,7 @@ noticia_aleatoria=$(limpiar_texto "${noticias[$RANDOM % ${#noticias[@]}]}")
 
 # Imprimir la noticia en la impresora térmica
 echo "=============================" > /dev/usb/lp0
-echo "Mensaje Secreto del Vault" >> /dev/usb/lp0
+echo "Mensaje nuevo del Vault" >> /dev/usb/lp0
 echo "=============================" >> /dev/usb/lp0
 echo "$noticia_aleatoria" >> /dev/usb/lp0
 echo "=============================" >> /dev/usb/lp0
