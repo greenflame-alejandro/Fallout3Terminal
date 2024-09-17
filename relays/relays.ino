@@ -1,6 +1,7 @@
 const int relayPins[] = {2, 3, 4, 5};  // Pines conectados a los relés
 bool relayStates[] = {false, false, false, false};  // Estado de los relés
 String commandBuffer = "";  // Buffer para almacenar los comandos
+unsigned long relayTimers[4] = {0, 0, 0, 0};  // Temporizadores para cada relé
 
 void setup() {
   Serial.begin(9600);  // Iniciar la comunicación serial
@@ -11,6 +12,7 @@ void setup() {
 }
 
 void loop() {
+  // Verificar y procesar comandos entrantes
   while (Serial.available() > 0) {
     char incomingChar = Serial.read();  // Leer un carácter del puerto serie
     if (isDigit(incomingChar)) {
@@ -21,6 +23,18 @@ void loop() {
     if (commandBuffer.length() == 4) {
       processCommand(commandBuffer);
       commandBuffer = "";  // Limpiar el buffer para el siguiente comando
+    }
+  }
+
+  // Verificar y apagar relés si su tiempo ha expirado
+  for (int i = 0; i < 4; i++) {
+    if (relayStates[i] && relayTimers[i] > 0 && millis() >= relayTimers[i]) {
+      digitalWrite(relayPins[i], HIGH);  // Apagar el relé
+      relayStates[i] = false;
+      relayTimers[i] = 0;
+      Serial.print("Pin ");
+      Serial.print(relayPins[i]);
+      Serial.println(" apagado automáticamente.");
     }
   }
 }
@@ -35,32 +49,26 @@ void processCommand(String command) {
     return;
   }
 
-  if (relayStates[pinIndex]) {
-    // Si el relé ya está encendido, apagarlo antes de ejecutar el nuevo comando
-    digitalWrite(relayPins[pinIndex], HIGH);  // Cambiar a HIGH para apagar
-    relayStates[pinIndex] = false;
-    delay(100);  // Pequeña pausa antes de ejecutar el nuevo comando
-  }
+  // Apagar el relé antes de ejecutar el nuevo comando
+  digitalWrite(relayPins[pinIndex], HIGH);
+  relayStates[pinIndex] = false;
+  relayTimers[pinIndex] = 0;
+  delay(100);  // Pequeña pausa antes de ejecutar el nuevo comando
 
   if (mode == 1) {
-    digitalWrite(relayPins[pinIndex], LOW);  // Encender el relé indefinidamente (cambio a LOW)
+    digitalWrite(relayPins[pinIndex], LOW);  // Encender el relé indefinidamente
     relayStates[pinIndex] = true;
     Serial.print("Pin ");
     Serial.print(relayPins[pinIndex]);
     Serial.println(" encendido indefinidamente.");
   } else if (mode == 0) {
-    digitalWrite(relayPins[pinIndex], LOW);  // Encender el relé (cambio a LOW)
+    digitalWrite(relayPins[pinIndex], LOW);  // Encender el relé
     relayStates[pinIndex] = true;
+    relayTimers[pinIndex] = millis() + (unsigned long)duration * 1000;  // Establecer el temporizador
     Serial.print("Pin ");
     Serial.print(relayPins[pinIndex]);
     Serial.print(" encendido por ");
     Serial.print(duration);
     Serial.println(" segundos.");
-    delay(duration * 1000);  // Mantener el relé encendido por el tiempo especificado
-    digitalWrite(relayPins[pinIndex], HIGH);  // Apagar el relé (cambio a HIGH)
-    relayStates[pinIndex] = false;
-    Serial.print("Pin ");
-    Serial.print(relayPins[pinIndex]);
-    Serial.println(" apagado.");
   }
 }
