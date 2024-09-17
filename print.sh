@@ -58,4 +58,8 @@ echo "Mensaje nuevo del Vault" >> /dev/usb/lp0
 echo "=============================" >> /dev/usb/lp0
 echo "$noticia_aleatoria" >> /dev/usb/lp0
 echo "=============================" >> /dev/usb/lp0
+# Agregar saltos de línea adicionales
+for i in {1..5}; do
+  echo "" >> /dev/usb/lp0
+done
 echo "" >> /dev/usb/lp0
