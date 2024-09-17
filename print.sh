@@ -103,3 +103,5 @@ for i in {1..5}; do
   echo "" >> /dev/usb/lp0
 done
 echo "" >> /dev/usb/lp0
+
+/home/vault/Escritorio/Fallout3Terminal/relay.sh 2100
