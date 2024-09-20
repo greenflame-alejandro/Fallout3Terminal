@@ -14,7 +14,7 @@ try:
     )
     
     if ser.is_open:
-        print(f"Puerto serial {ser.port} abierto correctamente")
+        print("Puerto serial {} abierto correctamente".format(ser.port))
     
     # Enviar algún comando o datos por el puerto serial
     ser.write(b'Hola, puerto serial!\n')
@@ -23,11 +23,11 @@ try:
     while True:
         if ser.in_waiting > 0:
             data = ser.readline()
-            print(f"Recibido: {data.decode('utf-8')}")
+            print("Recibido: {}".format(data.decode('utf-8')))
         time.sleep(1)
 
 except serial.SerialException as e:
-    print(f"Error al abrir el puerto serial: {e}")
+    print("Error al abrir el puerto serial: {}".format(e))
 
 finally:
     if ser.is_open:
