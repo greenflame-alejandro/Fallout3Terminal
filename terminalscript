@@ -23,7 +23,7 @@ COLUMNS=12
 
 # Función para reproducir sonidos
 play_sound() {
-    aplay -q "$BASE_DIR/$1" -b 16 > /dev/null 2>&1
+    aplay -q "$BASE_DIR/$1" > /dev/null 2>&1
 }
 
 # Función para mostrar el encabezado superior alineado al centro
