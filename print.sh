@@ -106,4 +106,4 @@ echo "" >> /dev/usb/lp0
 
 /home/vault/Escritorio/Fallout3Terminal/relay.sh 2100
 
- play -q "/home/vault/Escritorio/Fallout3Terminal/ui_hacking_passgood.wav" -b 16 > /dev/null 2>&1
+aplay -q "/home/vault/Escritorio/Fallout3Terminal/ui_hacking_passgood.wav" > /dev/null 2>&1
