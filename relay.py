@@ -1,6 +1,9 @@
 import serial
 import time
 
+# Inicializa el objeto ser como None para evitar errores en el finally
+ser = None
+
 # Configurar el puerto serial
 try:
     ser = serial.Serial(
@@ -30,6 +33,6 @@ except serial.SerialException as e:
     print("Error al abrir el puerto serial: {}".format(e))
 
 finally:
-    if ser.is_open:
+    if ser and ser.is_open:
         ser.close()
         print("Puerto serial cerrado")
